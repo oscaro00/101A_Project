@@ -1,0 +1,112 @@
+---
+title: "Final Paper"
+author: "Oscar O'Brien, Kaijun Cui, Donald Chung" 
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r, echo=FALSE, message = FALSE}
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(car)
+library(GGally)
+library(corrplot)
+train <- read.csv("CBDtrain.csv")
+test <- read.csv("CBDtestNoY.csv")
+```
+
+| Feature                    | Response                                |
+|----------------------------|-----------------------------------------|
+| Name                       | Oscar O'Brien, Kaijun Cui, Donald Chung |
+| SID                        | x                                       |
+| Kaggle Nickname            | x                                       |
+| Kaggle Rank                | x                                       |
+| Kaggle R^2                 | x                                       |
+| Total Number of Predictors | x                                       |
+| Total Number of Betas      | x                                       |
+| BIC                        | x                                       |
+| Complexity Grade           | x                                       |
+
+# Abstract
+The purpose of this project is to create a multiple linear regression model to predict the winning proportion of every team based on some stat sheet of any game. We used variable selection techniques and regression theory to select a subset of variables to use in our multiple linear regression model to predict the winning proportions. In total, [X] predictors were used in our final model. Our [TEAM NAME] achieved a [RANK] on the class Kaggle competition. Our submitted model's $R^2$ value for training model is [VALUE], and the model's $R^2$ value for the testing model is [VALUE].
+
+# Introduction
+We aim to understand which predictors are relevant to determining the win proportion of a team and by doing so construct a multiple linear regression model to predict win proportion. We have used data gathered from the 2013-2021 seasons of division I college basketball seasons in the United States. Our dataset has `r nrow(train) + nrow(test)` observations and `r ncol(train)-1` predictors which consisted of different statistics gathered from the season (e.g. Free throws, etc.). The final regression model that was submitted to a class Kaggle competition used to predict the win proportion of teams was used to predict the win proportion of a testing dataset containing [VALUE] observations. Below are the set of initial predictors provided with the dataset.
+
+\newpage
+| Feature        | Response    |
+|----------------|-------------|
+| X500.Level     | Categorical |
+| ADJOE          | Numerical   |
+| ADJDE          | Numerical   |
+| EFG_O          | Numerical   |
+| EFG_D          | Numerical   |
+| TOR            | Numerical   |
+| TORD           | Numerical   |
+| ORB            | Numerical   |
+| DRB            | Numerical   |
+| FTR            | Numerical   |
+| FTRD           | Numerical   |
+| X2P_O          | Numerical   |
+| X2P_D          | Numerical   |
+| X3P_O          | Numerical   |
+| X3P_D          | Numerical   |
+| WAB            | Numerical   |
+| YEAR           | Categorical |
+| NCAA           | Categorical |
+| Power.Rating   | Categorical |
+| Adjusted.Tempo | Numerical   |
+
+# Methodology
+
+## Analyzing the response variable: Win proportion (W.P)
+
+We first take a look at the response variable, W.P, to determine if it is normal to decide whether or not it is necessary to perform a transformation on it.  The density histogram below shows that it is approximately normal.
+
+
+```{r  echo=FALSE, warning=FALSE, message=FALSE}
+#summary(train$W.P)
+
+ggplot(train, aes(x = W.P)) + 
+  geom_histogram(aes(y = ..density.., color = 1)) +
+  geom_density(color = 2) +
+  labs(x = "Winning Percentage", title = "Density histogram of Winning Percentage")
+
+#summary(powerTransform(W.P ~ 1, data = train))
+```
+
+
+## Analyzing the categorical variables
+
+| Variable     | Number of Categories |
+|--------------|----------------------|
+| X500.Level   | 2                    |
+| YEAR         | 9                    |
+| Power.Rating | 3                    |
+| NCAA         | 2                    |
+
+
+```{r categorical variables, echo=FALSE}
+p1 <- ggplot(train, aes(x = X500.Level, y = W.P, fill = X500.Level)) + 
+  geom_boxplot() +
+  theme(legend.position = "none")
+
+p2 <- ggplot(train, aes(x = as.factor(YEAR), y = W.P, fill = as.factor(YEAR))) + 
+  geom_boxplot() +
+  theme(legend.position = "none") +
+  labs(x = "YEAR")
+
+p3 <- ggplot(train, aes(x = Power.Rating, y = W.P, fill = Power.Rating)) + 
+  geom_boxplot() +
+  theme(legend.position = "none")
+
+p4 <- ggplot(train, aes(x = NCAA, y = W.P, fill = NCAA)) + 
+  geom_boxplot() +
+  theme(legend.position = "none")
+
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+```
+
+## Analyzing the numerical variables
