@@ -110,3 +110,556 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 ```
 
 ## Analyzing the numerical variables
+
+
+
+
+
+
+## Variable Selection with BIC and AIC
+
+### AIC Backstep Model
+
+We used backstep AIC and BIC to verify that our model is using the best subset of predictors to predict winning percentage. First using backstep AIC, the summary statistics are below. This model overfit with lots of predictors that are not significant, so it was worth looking at BIC because it has a larger penalty.
+
+```{r AIC model, echo=FALSE, warning=FALSE, message=FALSE}
+m.a <- lm(formula = W.P ~ ADJOE + X500.Level + ADJDE + EFG_O + EFG_D + 
+    TOR + TORD + ORB + DRB + FTR + FTRD + X2P_O + X2P_D + X3P_O + 
+    X3P_D + WAB + Adjusted.Tempo + NCAA + Power.Rating + ADJOE:X500.Level + 
+    X500.Level:ORB + X500.Level:X2P_O + WAB:Adjusted.Tempo + 
+    X2P_O:NCAA + WAB:NCAA + ADJOE:Power.Rating + ADJDE:Power.Rating + 
+    EFG_O:Power.Rating + TORD:Power.Rating + FTRD:Power.Rating + 
+    X2P_O:Power.Rating + X3P_O:Power.Rating + ADJOE:ADJDE + ADJOE:EFG_O + 
+    ADJOE:EFG_D + ADJOE:FTR + ADJOE:X3P_O + ADJOE:WAB + ADJOE:Adjusted.Tempo + 
+    ADJDE:EFG_D + ADJDE:TOR + ADJDE:TORD + ADJDE:FTR + ADJDE:FTRD + 
+    ADJDE:X2P_O + ADJDE:X3P_O + EFG_O:EFG_D + EFG_O:TOR + EFG_O:ORB + 
+    EFG_O:X2P_O + EFG_O:WAB + EFG_O:Adjusted.Tempo + EFG_D:TOR + 
+    EFG_D:TORD + EFG_D:ORB + EFG_D:FTR + EFG_D:X3P_D + EFG_D:WAB + 
+    EFG_D:Adjusted.Tempo + TOR:ORB + TOR:FTR + TOR:X2P_D + TOR:X3P_O + 
+    TOR:X3P_D + TORD:ORB + TORD:FTR + TORD:Adjusted.Tempo + ORB:DRB + 
+    ORB:X2P_D + ORB:X3P_O + ORB:X3P_D + ORB:WAB + DRB:FTR + DRB:X3P_D + 
+    FTR:FTRD + FTR:X3P_O + FTR:X3P_D + FTRD:X2P_O + X2P_O:X2P_D + 
+    X2P_O:Adjusted.Tempo + X2P_D:WAB + X2P_D:Adjusted.Tempo + 
+    X3P_O:WAB + X3P_O:Adjusted.Tempo + X3P_D:WAB, data = train)
+#summary(m.a)
+
+#aic_table <- summary(m.a)$coefficients
+#aic_table <- round(aic_table, 7)
+#write.csv(aic_table, "AIC model table.csv")
+
+#aic_sum_stats <- data.frame("Observations" = 2000,
+#                            "Residual Std Error" = round(summary(m.a)$sigma, 7),
+#                            "R2" = round(summary(m.a)$r.squared, 4),
+#                            "Adjusted R2" = round(summary(m.a)$adj.r.squared, 4))
+#write.csv(aic_sum_stats, "AIC sum stats.csv", row.names = FALSE)
+```
+
+|                          | Estimate   | Std. Error | t value    | Pr(>\|t\|) |
+|--------------------------|------------|------------|------------|------------|
+| (Intercept)              | 4.0054095  | 2.1281107  | 1.8821434  | 0.0599688  |
+| ADJOE                    | -0.0296529 | 0.0242517  | -1.222714  | 0.2215889  |
+| X500.LevelYES            | 0.8503967  | 0.1425019  | 5.9676157  | 0          |
+| ADJDE                    | 0.001397   | 0.023863   | 0.0585445  | 0.9533211  |
+| EFG_O                    | 0.3101632  | 0.147381   | 2.1044991  | 0.0354656  |
+| EFG_D                    | 0.1112445  | 0.1248427  | 0.8910774  | 0.3730001  |
+| TOR                      | -0.0115156 | 0.0395842  | -0.2909152 | 0.7711478  |
+| TORD                     | -0.0567102 | 0.0315993  | -1.7946645 | 0.0728656  |
+| ORB                      | -0.0141021 | 0.0185733  | -0.7592676 | 0.4477864  |
+| DRB                      | -0.0192112 | 0.0113711  | -1.6894781 | 0.0912914  |
+| FTR                      | 0.0595799  | 0.0172358  | 3.4567589  | 0.0005587  |
+| FTRD                     | 0.020957   | 0.0097514  | 2.1491347  | 0.0317493  |
+| X2P_O                    | -0.1408757 | 0.0921257  | -1.5291687 | 0.1263886  |
+| X2P_D                    | -0.1372335 | 0.0792554  | -1.7315354 | 0.0835181  |
+| X3P_O                    | -0.2163702 | 0.0893662  | -2.421164  | 0.0155637  |
+| X3P_D                    | -0.003158  | 0.0630261  | -0.0501067 | 0.9600426  |
+| WAB                      | 0.0102746  | 0.0266412  | 0.3856637  | 0.6997888  |
+| Adjusted.Tempo           | -0.0774396 | 0.0206222  | -3.7551594 | 0.0001784  |
+| NCAAYES                  | 0.2418339  | 0.1371613  | 1.7631353  | 0.0780379  |
+| Power.RatingMEDIUM       | 0.1456321  | 0.2179877  | 0.6680749  | 0.5041667  |
+| Power.RatingSMALL        | 0.121706   | 0.3128584  | 0.3890131  | 0.6973099  |
+| ADJOE:X500.LevelYES      | -0.0040354 | 0.0012765  | -3.1612462 | 0.0015957  |
+| X500.LevelYES:ORB        | -0.0044645 | 0.0015055  | -2.9654119 | 0.0030603  |
+| X500.LevelYES:X2P_O      | -0.0049215 | 0.0024139  | -2.0388103 | 0.0416067  |
+| WAB:Adjusted.Tempo       | -0.0008132 | 0.000237   | -3.4319834 | 0.000612   |
+| X2P_O:NCAAYES            | -0.0044018 | 0.0027186  | -1.6191494 | 0.1055806  |
+| WAB:NCAAYES              | -0.0064579 | 0.0035111  | -1.8392904 | 0.0660279  |
+| ADJOE:Power.RatingMEDIUM | 0.0077266  | 0.0023544  | 3.2818154  | 0.00105    |
+| ADJOE:Power.RatingSMALL  | 0.0135774  | 0.0036802  | 3.6893417  | 0.0002311  |
+| ADJDE:Power.RatingMEDIUM | -0.0055867 | 0.0022445  | -2.4891209 | 0.0128907  |
+| ADJDE:Power.RatingSMALL  | -0.0114453 | 0.003311   | -3.4567179 | 0.0005588  |
+| EFG_O:Power.RatingMEDIUM | -0.0388028 | 0.0170988  | -2.2693336 | 0.0233594  |
+| EFG_O:Power.RatingSMALL  | -0.0072447 | 0.0194801  | -0.3719043 | 0.7100055  |
+| TORD:Power.RatingMEDIUM  | -0.0035402 | 0.0028418  | -1.245749  | 0.2130097  |
+| TORD:Power.RatingSMALL   | 0.0017696  | 0.0039573  | 0.4471646  | 0.6548071  |
+| FTRD:Power.RatingMEDIUM  | 0.0001431  | 0.001004   | 0.1424888  | 0.886709   |
+| FTRD:Power.RatingSMALL   | 0.0026394  | 0.0014524  | 1.8172472  | 0.0693362  |
+| X2P_O:Power.RatingMEDIUM | 0.0209702  | 0.0109744  | 1.9108296  | 0.0561764  |
+| X2P_O:Power.RatingSMALL  | 0.0008631  | 0.0122795  | 0.070286   | 0.9439734  |
+| X3P_O:Power.RatingMEDIUM | 0.0172804  | 0.0095623  | 1.807134   | 0.070899   |
+| X3P_O:Power.RatingSMALL  | -0.0034365 | 0.0111233  | -0.308949  | 0.7573941  |
+| ADJOE:ADJDE              | 0.0005443  | 0.0002115  | 2.573684   | 0.0101372  |
+| ADJOE:EFG_O              | -0.0010769 | 0.0004267  | -2.5237965 | 0.0116902  |
+| ADJOE:EFG_D              | -0.0006955 | 0.0003634  | -1.9141836 | 0.0557463  |
+| ADJOE:FTR                | -0.0002821 | 9.29e-05   | -3.0382161 | 0.0024121  |
+| ADJOE:X3P_O              | 0.0006831  | 0.0003683  | 1.8549083  | 0.0637636  |
+| ADJOE:WAB                | 0.0005034  | 0.0001843  | 2.7307173  | 0.0063779  |
+| ADJOE:Adjusted.Tempo     | 0.0005797  | 0.0002124  | 2.7292605  | 0.006406   |
+| ADJDE:EFG_D              | 0.0004603  | 0.0002748  | 1.6750338  | 0.0940916  |
+| ADJDE:TOR                | 0.0008949  | 0.0003323  | 2.6931111  | 0.0071409  |
+| ADJDE:TORD               | -0.0004576 | 0.0002605  | -1.756383  | 0.0791836  |
+| ADJDE:FTR                | -0.0004368 | 0.0001372  | -3.1840295 | 0.0014758  |
+| ADJDE:FTRD               | -0.0001997 | 8.59e-05   | -2.3255497 | 0.0201471  |
+| ADJDE:X2P_O              | -0.0007114 | 0.0002802  | -2.5389192 | 0.0111985  |
+| ADJDE:X3P_O              | -0.0004519 | 0.0002949  | -1.5324145 | 0.1255861  |
+| EFG_O:EFG_D              | 0.00115    | 0.0007134  | 1.6120714  | 0.107112   |
+| EFG_O:TOR                | -0.0023058 | 0.0006875  | -3.3538168 | 0.0008127  |
+| EFG_O:ORB                | 0.0007956  | 0.0003671  | 2.1672261  | 0.0303411  |
+| EFG_O:X2P_O              | 0.0007572  | 0.0003652  | 2.0731553  | 0.0382919  |
+| EFG_O:WAB                | 0.000799   | 0.0005159  | 1.5488461  | 0.1215847  |
+| EFG_O:Adjusted.Tempo     | -0.0032124 | 0.0021159  | -1.518268  | 0.1291127  |
+| EFG_D:TOR                | 0.0107441  | 0.0057452  | 1.8700998  | 0.0616231  |
+| EFG_D:TORD               | 0.0010386  | 0.0004686  | 2.2161359  | 0.0267999  |
+| EFG_D:ORB                | -0.0092134 | 0.0024238  | -3.8012935 | 0.0001485  |
+| EFG_D:FTR                | 0.0005194  | 0.0002623  | 1.9800135  | 0.0478456  |
+| EFG_D:X3P_D              | -0.0007649 | 0.0004184  | -1.8281322 | 0.0676859  |
+| EFG_D:WAB                | 0.0033181  | 0.0017785  | 1.8656946  | 0.0622376  |
+| EFG_D:Adjusted.Tempo     | -0.0010091 | 0.0005511  | -1.8310893 | 0.0672432  |
+| TOR:ORB                  | 0.0004554  | 0.0002985  | 1.5258977  | 0.1272013  |
+| TOR:FTR                  | -0.0004213 | 0.0002242  | -1.8793338 | 0.0603514  |
+| TOR:X2P_D                | -0.0076484 | 0.0037172  | -2.0575616 | 0.039768   |
+| TOR:X3P_O                | 0.0021799  | 0.0006917  | 3.1513187  | 0.0016506  |
+| TOR:X3P_D                | -0.0062106 | 0.0030603  | -2.029397  | 0.0425566  |
+| TORD:ORB                 | 0.0006006  | 0.0002541  | 2.3638445  | 0.0181862  |
+| TORD:FTR                 | -0.0005298 | 0.0002262  | -2.3425826 | 0.0192532  |
+| TORD:Adjusted.Tempo      | 0.0010631  | 0.0003168  | 3.3559722  | 0.0008064  |
+| ORB:DRB                  | -0.0005371 | 0.0001685  | -3.1876099 | 0.0014578  |
+| ORB:X2P_D                | 0.0062219  | 0.00156    | 3.9884837  | 6.9e-05    |
+| ORB:X3P_O                | -0.0006556 | 0.0003232  | -2.0284462 | 0.0426535  |
+| ORB:X3P_D                | 0.0046478  | 0.0013067  | 3.5569292  | 0.0003844  |
+| ORB:WAB                  | 0.0004191  | 0.0001502  | 2.7908954  | 0.0053086  |
+| DRB:FTR                  | 0.0002372  | 0.00014    | 1.6940752  | 0.0904144  |
+| DRB:X3P_D                | 0.0005016  | 0.0002654  | 1.8897772  | 0.0589394  |
+| FTR:FTRD                 | 0.0001313  | 6.28e-05   | 2.090745   | 0.0366831  |
+| FTR:X3P_O                | 0.0002679  | 0.0001747  | 1.5335136  | 0.1253153  |
+| FTR:X3P_D                | -0.0003892 | 0.0002174  | -1.7901454 | 0.0735892  |
+| FTRD:X2P_O               | -0.0001636 | 0.0001151  | -1.4215096 | 0.1553323  |
+| X2P_O:X2P_D              | 0.0006036  | 0.0003877  | 1.556969   | 0.1196439  |
+| X2P_O:Adjusted.Tempo     | 0.0020012  | 0.0013476  | 1.4850137  | 0.1377056  |
+| X2P_D:WAB                | -0.0024435 | 0.0011435  | -2.1369702 | 0.0327274  |
+| X2P_D:Adjusted.Tempo     | 0.0006605  | 0.0004331  | 1.5248549  | 0.1274612  |
+| X3P_O:WAB                | -0.0006295 | 0.0004536  | -1.387844  | 0.1653468  |
+| X3P_O:Adjusted.Tempo     | 0.0021271  | 0.0011871  | 1.7917886  | 0.0733254  |
+| X3P_D:WAB                | -0.0017679 | 0.0009611  | -1.839435  | 0.0660067  |
+
+
+| Observations | Residual.Std.Error | $R^2$  | Adjusted $R^2$ |
+|--------------|--------------------|--------|-------------|
+| 2000         | 0.0781057          | 0.8411 | 0.8334      |
+
+
+Moving to BIC, the summary statistics are shown for the predictor subset out of all two variable interactions. BIC recommends far less predictors than AIC as expected, and all interactions are significant except one.
+
+### BIC Backstep Model
+
+```{r BIC model, echo=FALSE, warning=FALSE, message=FALSE}
+m.b <- lm(formula = W.P ~ ADJOE + X500.Level + ADJDE + EFG_O + EFG_D +
+    TOR + TORD + ORB + DRB + FTRD + X2P_D + WAB + Adjusted.Tempo +
+    ADJOE:X500.Level + X500.Level:DRB + WAB:Adjusted.Tempo +
+    ADJOE:Power.Rating + ADJDE:Power.Rating + FTRD:Power.Rating +
+    ADJOE:WAB + ADJOE:Adjusted.Tempo + ADJDE:FTRD + ADJDE:X2P_O +
+    TORD:Adjusted.Tempo + X2P_O:X2P_D + X2P_D:WAB, data = train)
+#summary(m.b)
+
+#bic_table <- summary(m.b)$coefficients
+#bic_table <- round(bic_table, 7)
+#write.csv(bic_table, "BIC model table.csv")
+
+#bic_sum_stats <- data.frame("Observations" = 2000,
+#                            "Residual Std Error" = round(summary(m.b)$sigma, 7),
+#                            "R2" = round(summary(m.b)$r.squared, 4),
+#                            "Adjusted R2" = round(summary(m.b)$adj.r.squared, 4))
+#write.csv(bic_sum_stats, "BIC sum stats.csv", row.names = FALSE)
+```
+
+|                          | Estimate   | Std. Error | t value     | Pr(>\|t\|) |
+|--------------------------|------------|------------|-------------|------------|
+| (Intercept)              | 4.0872589  | 1.2998372  | 3.1444392   | 0.0016889  |
+| ADJOE                    | -0.04551   | 0.0100383  | -4.5336301  | 6.1e-06    |
+| X500.LevelYES            | 0.5315105  | 0.1109122  | 4.7921713   | 1.8e-06    |
+| ADJDE                    | 0.0504118  | 0.0066518  | 7.5786294   | 0          |
+| EFG_O                    | 0.0207607  | 0.0018756  | 11.068867   | 0          |
+| EFG_D                    | -0.0193563 | 0.0019069  | -10.1508221 | 0          |
+| TOR                      | -0.0126954 | 0.001484   | -8.5547497  | 0          |
+| TORD                     | -0.0518984 | 0.0194335  | -2.6705597  | 0.0076348  |
+| ORB                      | 0.0065183  | 0.0007191  | 9.0642784   | 0          |
+| DRB                      | -0.0072228 | 0.001044   | -6.9182688  | 0          |
+| FTRD                     | 0.0266694  | 0.0069422  | 3.8416415   | 0.0001261  |
+| X2P_D                    | -0.0477884 | 0.0121936  | -3.91913    | 9.19e-05   |
+| WAB                      | 0.0569002  | 0.0127716  | 4.4552274   | 8.9e-06    |
+| Adjusted.Tempo           | -0.0781789 | 0.0189494  | -4.1256725  | 3.85e-05   |
+| ADJOE:X500.LevelYES      | -0.0032    | 0.0010331  | -3.0974583  | 0.0019794  |
+| X500.LevelYES:DRB        | -0.0044306 | 0.0012171  | -3.640366   | 0.0002793  |
+| WAB:Adjusted.Tempo       | -0.0006059 | 0.000157   | -3.8594322  | 0.0001173  |
+| ADJOE:Power.RatingMEDIUM | 0.0058284  | 0.0013739  | 4.242224    | 2.32e-05   |
+| ADJOE:Power.RatingSMALL  | 0.0108442  | 0.0017667  | 6.1380723   | 0          |
+| ADJDE:Power.RatingMEDIUM | -0.0060468 | 0.0014051  | -4.3033445  | 1.76e-05   |
+| ADJDE:Power.RatingSMALL  | -0.0119556 | 0.0016891  | -7.0778966  | 0          |
+| FTRD:Power.RatingMEDIUM  | 4.8e-06    | 0.0008323  | 0.0057576   | 0.9954067  |
+| FTRD:Power.RatingSMALL   | 0.0035653  | 0.0010851  | 3.2857423   | 0.001035   |
+| ADJOE:WAB                | 0.0003449  | 7.4e-05    | 4.659524    | 3.4e-06    |
+| ADJOE:Adjusted.Tempo     | 0.0005362  | 0.0001474  | 3.6372545   | 0.0002826  |
+| ADJDE:FTRD               | -0.0002874 | 7.06e-05   | -4.0686417  | 4.92e-05   |
+| ADJDE:X2P_O              | -0.00047   | 0.0001148  | -4.0947164  | 4.4e-05    |
+| TORD:Adjusted.Tempo      | 0.0010532  | 0.0002858  | 3.6852747   | 0.0002346  |
+| X2P_D:X2P_O              | 0.0009131  | 0.0002388  | 3.8230342   | 0.0001359  |
+| X2P_D:WAB                | -0.0006124 | 0.0001166  | -5.2529786  | 2e-07      |
+
+| Observations | Residual Std. Error | $R^2$     | Adjusted $R^2$ |
+|--------------|--------------------|--------|-------------|
+| 2000         | 0.0799765          | 0.8278 | 0.8253      |
+
+
+Using the information from the backstep AIC and BIC, we created our final model, which uses less predictors without losing very much adjusted $R^2$. The summary statistics are shown below. All predictors are significant with p-values less than .01. In total, there are 23 predictors and 24 betas because of the intercept.
+
+```{r updated_model, echo = FALSE, message=FALSE, warning=FALSE}
+updated_model <- lm(W.P ~ EFG_O + EFG_D +
+           TOR + TORD + ORB + DRB +
+           FTRD + WAB + X500.Level +
+           ADJOE:X500.Level + WAB:X500.Level +
+           ADJOE:Power.Rating + ADJDE:Power.Rating + EFG_O:Power.Rating + 
+           TOR:Power.Rating + ORB:Power.Rating,
+         data = train)
+#summary(updated_model)
+
+#model_table <- summary(updated_model)$coefficients
+#model_table <- round(model_table, 7)
+#write.csv(model_table, "Model table.csv")
+
+#model_sum_stats <- data.frame("Observations" = 2000,
+#                            "Residual Std Error" = round(summary(updated_model)$sigma, 7),
+#                           "R2" = round(summary(updated_model)$r.squared, 4),
+#                            "Adjusted R2" = round(summary(updated_model)$adj.r.squared, 4))
+#write.csv(model_sum_stats, "Model sum stats.csv", row.names = FALSE)
+```
+
+|                          | Estimate   | Std. Error | t value     | Pr(>\|t\|) |
+|--------------------------|------------|------------|-------------|------------|
+| (Intercept)              | -0.0956912 | 0.108723   | -0.8801375  | 0.3788919  |
+| EFG_O                    | 0.025108   | 0.0019409  | 12.9364965  | 0          |
+| EFG_D                    | -0.0173218 | 0.0014257  | -12.1496496 | 0          |
+| TOR                      | -0.0184541 | 0.0021265  | -8.678167   | 0          |
+| TORD                     | 0.0188746  | 0.0013756  | 13.7213678  | 0          |
+| ORB                      | 0.0092178  | 0.0010933  | 8.4313574   | 0          |
+| DRB                      | -0.0091768 | 0.0008059  | -11.3866487 | 0          |
+| FTRD                     | -0.0018203 | 0.0003588  | -5.0734105  | 4e-07      |
+| WAB                      | 0.0181589  | 0.0010879  | 16.6924915  | 0          |
+| X500.LevelYES            | 0.5972203  | 0.1123004  | 5.3180617   | 1e-07      |
+| X500.LevelNO:ADJOE       | -0.0101787 | 0.001335   | -7.6246476  | 0          |
+| X500.LevelYES:ADJOE      | -0.0148462 | 0.0012437  | -11.9367636 | 0          |
+| WAB:X500.LevelYES        | 0.0050946  | 0.0013771  | 3.6994496   | 0.000222   |
+| ADJOE:Power.RatingMEDIUM | 0.0070205  | 0.0016043  | 4.3759501   | 1.27e-05   |
+| ADJOE:Power.RatingSMALL  | 0.0109665  | 0.0017807  | 6.1585679   | 0          |
+| Power.RatingLARGE:ADJDE  | 0.0130708  | 0.0011956  | 10.9323658  | 0          |
+| Power.RatingMEDIUM:ADJDE | 0.0114744  | 0.0013279  | 8.6407309   | 0          |
+| Power.RatingSMALL:ADJDE  | 0.009315   | 0.0011239  | 8.2883985   | 0          |
+| EFG_O:Power.RatingMEDIUM | -0.0110918 | 0.0026461  | -4.1918241  | 2.89e-05   |
+| EFG_O:Power.RatingSMALL  | -0.016703  | 0.0031358  | -5.3264853  | 1e-07      |
+| TOR:Power.RatingMEDIUM   | 0.0070655  | 0.0026112  | 2.7059044   | 0.0068704  |
+| TOR:Power.RatingSMALL    | 0.0140951  | 0.002978   | 4.7330394   | 2.4e-06    |
+| ORB:Power.RatingMEDIUM   | -0.0045416 | 0.001465   | -3.1000676  | 0.0019621  |
+| ORB:Power.RatingSMALL    | -0.0055318 | 0.001617   | -3.4210292  | 0.0006365  |
+
+| Observations | Residual Std. Error | $R^2$     | Adjusted $R^2$ |
+|--------------|--------------------|--------|-------------|
+| 2000         | 0.0811705          | 0.8221 | 0.82        |
+
+
+
+To verify that the added variables in the BIC recommended model are not significant, we conduced a partial f-test. We did not think a partial f-test was necessary with the AIC recommended model because the model was overfitting with many of the predictors being insignificant. Interestingly, the partial f-test produced a very significant p-value (<.001), which implies that at least one beta in the BIC model that was removed is not 0. However, in practice, the 6 added predictors in the BIC model only increased the adjusted $R^2$ value by 0.00166. As a result, we decided to accept that small lose in adjusted $R^2$ in favor of a simplier model.
+
+### Partial F-test
+
+```{r aic_f_test, echo=FALSE, message=FALSE, warning=FALSE}
+#anova(updated_model, m.b)
+
+#x <- anova(updated_model, m.b)
+#anova_table <- data.frame("Res.Df" = x$Res.Df,
+#                          "RSS" = round(x$RSS, 4),
+#                          "Df" = x$Df,
+#                          "Sum of Sq" = round(x$`Sum of Sq`, 4),
+#                          "F" = round(x$`F`, 4),
+#                          "Pr(>F)" = round(x$`Pr(>F)`, 7))
+#write.csv(anova_table, "Anova table.csv", row.names = FALSE)
+```
+
+| Res Df | RSS     | Df | Sum of Sq | F       | Pr(>\|F\|) |
+|--------|---------|----|-----------|---------|--------|
+| 1976   | 13.0192 | NA | NA        | NA      | NA     |
+| 1970   | 12.6006 | 6  | 0.4186    | 10.9069 | 0      |
+
+## Verifying VIF
+
+To check to multicollinearity between our predictors, we made sure that the VIF for all the predictors was less than five. As shown below, all non interaction predictors have a VIF less than the cut off of five, but WAB is getting close to five. However, since all predictors have a VIF of less than five, our model is still valid.
+
+```{r vif_check, echo=FALSE, message=FALSE, warning=FALSE}
+updated_model_no_interaction <- lm(W.P ~ EFG_O + EFG_D +
+           TOR + TORD + ORB + DRB +
+           FTRD + WAB + X500.Level,
+         data = train)
+#vif(updated_model_no_interaction)
+
+#vif_table <- data.frame("Predictor" = names(vif(updated_model_no_interaction)),
+#                        "VIF" = round(vif(updated_model_no_interaction), 5))
+#write.csv(vif_table, "VIF table.csv", row.names = FALSE)
+```
+
+| Predictor  | VIF     |
+|------------|---------|
+| EFG_O      | 2.10585 |
+| EFG_D      | 2.1256  |
+| TOR        | 1.63194 |
+| TORD       | 1.45436 |
+| ORB        | 1.56769 |
+| DRB        | 1.30315 |
+| FTRD       | 1.42125 |
+| WAB        | 4.80543 |
+| X500.Level | 2.34033 |
+
+
+## Verifying Diagnostics
+
+The diagnostic plots below reinforce the fact that our model is valid. Clearly the plots of the residuals and standardized residuals show that the relationship between the predicted and fitted values is linear with a line that is very horizontal. Moreover, there are not patterns in the residuals, so the observations are independent. The normal q-q plot shows that the standardized residuals are quite normal with with only slight deviation from the perfectly normal line at the far ends. Finally, the standardized residuals show that the variance is mostly constant. The observations of the highest and lowest fitted values seems to have slightly less variance, but there are fewer observations for these fitted values and later we will show that performing transformations on the data does not improve any perceived variance problem.
+
+Looking at the leverage plot, most of the leverage points are good leverage points with only a few leverage points being categorized as bad leverage points. More analysis is done on this below.
+
+```{r diagnostic_plots, echo=FALSE, message=FALSE, warning=FALSE}
+diag_plot2 <- function(x) {
+  p1 <- ggplot(x, aes(x$fitted.values, x$residuals)) + 
+  geom_point() +
+  geom_smooth(method = "loess", formula = y ~ x, color = "red") + 
+  geom_hline(yintercept = 0, color = "gray", linetype = "dashed") +
+  labs(x = "Fitted values", y = "Residuals", title = "Residual vs Fitted Plot")
+
+  p2 <- ggplot(x, aes(sample = rstandard(x))) + 
+    stat_qq() + 
+    stat_qq_line() +
+    labs(x = "Theoretical Quantiles", y = "Standardized Residuals", title = "Normal Q-Q")
+
+  p3 <- ggplot(x, aes(x$fitted.values, sqrt(abs(rstandard(x))))) + 
+    geom_point(na.rm = TRUE) +
+    geom_smooth(method = "loess", formula = y ~ x, na.rm = TRUE) +
+    labs(x = "Fitted Value", y = expression(sqrt("|Standardized Residuals|")), 
+         title = "Scale-Location") + 
+    geom_hline(yintercept = sqrt(2), color = "red", linetype = "dashed")
+
+  p4 <- ggplot(x, aes(hatvalues(x), rstandard(x))) +
+    geom_point(aes(size = cooks.distance(x)), na.rm = TRUE) +
+    scale_size_continuous("Cook's Distance", range = c(1,5)) +
+    labs(x = "Leverage", y = "Standardized Residuals",
+         title = "Residual vs Leverage Plot") +
+    geom_hline(yintercept = c(-2,2), color = "red", linetype = "dashed") +
+    geom_vline(xintercept = 2 * (nrow(summary(x)$coefficients)-1) / 2000, color = "blue", linetype = "dashed")
+  
+  grid.arrange(p1, p2, p3, p4, nrow = 2)
+}
+
+diag_plot2(updated_model)
+```
+
+The table below shows that there are 86 good leverage points and 7 bad leverage points. One way we tried to handle bad leverage points was removing them from the data and retraining the model without them. However, this did not improve the model accuracy at all on Kaggle. We also looked into transformations to apply to the model in order to fix these bad leverage points, but they also did not improve the model. The transformation work is shown below.
+
+### Bad Leverage Points
+
+```{r bad_leverage, echo = FALSE, warning=FALSE, message=FALSE}
+leverage <- ifelse(hatvalues(updated_model) > 2*23 / 2000, "Leverage", "Not Leverage")
+outlier <- ifelse(abs(rstandard(updated_model)) > 2, "Outlier", "Not Outlier")
+
+#table(leverage, outlier)
+
+#write.csv(table(leverage, outlier), "leverage table.csv")
+```
+
+|              | Not Outlier | Outlier |
+|--------------|-------------|---------|
+| Leverage     | 86          | 7       |
+| Not Leverage | 1828        | 79      |
+
+
+## Model Transformations
+
+### Inverse Regression
+
+Using only inverse regression on our current model, the recommended lambda is 1.105, but we would not use this value exactly as not to overfit. Rounding to the nearest common lambda value gives a lambda of 1, which is not a transformation on y. The difference in RSS between 1.105 and 1 is less than 0.1, so inverse regression by itself recommends no transformations.
+
+```{r only_inv_reg, echo=FALSE, warning=FALSE, message=FALSE}
+#inverseResponsePlot(updated_model)
+
+x <- inverseResponsePlot(updated_model)
+#irp_table <- data.frame("lambda" = x$lambda,
+#                        "RSS" = round(x$RSS, 6))
+#write.table(irp_table, "irp table.csv", row.names = FALSE)
+```
+
+| lambda           | RSS       |
+|------------------|-----------|
+| 1.10495400573719 | 10.64304  |
+| -1               | 60.061748 |
+| 0                | 27.14729  |
+| 1                | 10.703005 |
+
+
+### Box-Cox Method
+
+The output below shows the result of using a box-cox transformation on the strictly positive numerical predictors. Using the recommended transformations on the predictors yields a model with a worse adjusted $R^2$ value and some predictors are no longer independent. Moreover, the diagnostic plots shown look nearly identical to the model before the transformations were applied. As a result, using box-cox alone did not improve our model at all.
+
+```{r box_cox, echo=FALSE, warning=FALSE, message=FALSE}
+#summary(powerTransform(cbind(EFG_O, EFG_D, TOR, TORD, ORB, 
+#                             DRB, FTRD, W.P)~1, data = train))
+
+transformed_model <- lm(W.P ~ I(EFG_O^.75) + I(EFG_D^.75) +
+                      I(TOR^.25) + I(TORD^.5) + I(ORB^1.25) + I(DRB^.75) +
+                      I(FTRD^.25) + WAB + X500.Level +
+                      ADJOE:Power.Rating + ADJDE:Power.Rating + EFG_O:Power.Rating
+                      , data = train)
+#summary(transformed_model)
+diag_plot2(transformed_model)
+
+
+#x <- summary(powerTransform(cbind(EFG_O, EFG_D, TOR, TORD, ORB, 
+#                             DRB, FTRD, W.P)~1, data = train))
+#tm_table <- x$result
+#tm_table <- round(tm_table, 7)
+#write.csv(tm_table, "Transformed Model table.csv")
+
+#tmodel_table <- summary(transformed_model)$coefficients
+#tmodel_table <- round(tmodel_table, 7)
+#write.csv(tmodel_table, "TModel table.csv")
+
+#tmodel_sum_stats <- data.frame("Observations" = 2000,
+#                            "Residual Std Error" = round(summary(transformed_model)$sigma, 7),
+#                           "R2" = round(summary(transformed_model)$r.squared, 4),
+#                            "Adjusted R2" = round(summary(transformed_model)$adj.r.squared, 4))
+#write.csv(tmodel_sum_stats, "TModel sum stats.csv", row.names = FALSE)
+```
+
+|       | Est Power | Rounded Pwr | Wald Lwr Bnd | Wald Upr Bnd |
+|-------|-----------|-------------|--------------|--------------|
+| EFG_O | 0.7272337 | 1           | 0.2594333    | 1.1950342    |
+| EFG_D | 0.7641039 | 1           | 0.1883705    | 1.3398373    |
+| TOR   | 0.251128  | 0           | -0.0475478   | 0.5498039    |
+| TORD  | 0.4915995 | 0.5         | 0.2284788    | 0.7547202    |
+| ORB   | 1.1717593 | 1           | 0.9424139    | 1.4011047    |
+| DRB   | 0.8511817 | 1           | 0.5441797    | 1.1581837    |
+| FTRD  | 0.1330578 | 0           | -0.0632025   | 0.3293182    |
+| W.P   | 0.9506723 | 1           | 0.8968297    | 1.0045149    |
+
+|                          | Estimate   | Std. Error | t value     | Pr(>\|t\|) |
+|--------------------------|------------|------------|-------------|------------|
+| (Intercept)              | 2.8812825  | 1.0469778  | 2.7519997   | 0.0059772  |
+| I(EFG_O^0.75)            | -0.3622398 | 0.2218888  | -1.6325281  | 0.1027272  |
+| I(EFG_D^0.75)            | -0.0603354 | 0.0050809  | -11.8750106 | 0          |
+| I(TOR^0.25)              | -0.4581421 | 0.0548756  | -8.3487441  | 0          |
+| I(TORD^0.5)              | 0.1623535  | 0.0119577  | 13.5773053  | 0          |
+| I(ORB^1.25)              | 0.0021917  | 0.0002502  | 8.759291    | 0          |
+| I(DRB^0.75)              | -0.0289527 | 0.0025115  | -11.5281391 | 0          |
+| I(FTRD^0.25)             | -0.1036041 | 0.0210778  | -4.9153124  | 1e-06      |
+| WAB                      | 0.0202778  | 0.0009226  | 21.97905    | 0          |
+| X500.LevelYES            | 0.0784163  | 0.0061986  | 12.6507388  | 0          |
+| ADJOE:Power.RatingLARGE  | -0.0107827 | 0.0010677  | -10.0993214 | 0          |
+| ADJOE:Power.RatingMEDIUM | -0.0068074 | 0.0014122  | -4.8205709  | 1.5e-06    |
+| ADJOE:Power.RatingSMALL  | -0.0039867 | 0.0013997  | -2.8483141  | 0.0044405  |
+| Power.RatingLARGE:ADJDE  | 0.0122557  | 0.001109   | 11.0510611  | 0          |
+| Power.RatingMEDIUM:ADJDE | 0.0111774  | 0.0013298  | 8.4050252   | 0          |
+| Power.RatingSMALL:ADJDE  | 0.0091612  | 0.0010993  | 8.3334426   | 0          |
+| Power.RatingLARGE:EFG_O  | 0.1236495  | 0.0620627  | 1.9923307   | 0.0464718  |
+| Power.RatingMEDIUM:EFG_O | 0.1177503  | 0.0625302  | 1.8830941   | 0.059834   |
+| Power.RatingSMALL:EFG_O  | 0.1163107  | 0.0632313  | 1.8394495   | 0.0659987  |
+
+| Observations | Residual.Std.Error | R2     | Adjusted.R2 |
+|--------------|--------------------|--------|-------------|
+| 2000         | 0.0819522          | 0.8182 | 0.8165      |
+
+### Box-Cox and Inverse Regression Together
+
+After applying the box-cox transformation to the predictors, we then tried to see if transforming the Y variable with inverse regression would improve the model. However, the recommended lambda is 1.05, which rounds to 1. This means that the Y variable should not be transformed to minimize RSS.
+
+```{r both_transformations, echo = FALSE, warning=FALSE, message=FALSE}
+#inverseResponsePlot(transformed_model)
+
+x <- inverseResponsePlot(transformed_model)
+#both_table <- data.frame("lambda" = x$lambda,
+#                        "RSS" = round(x$RSS, 6))
+#write.table(both_table, "both table.csv", row.names = FALSE)
+```
+
+| lambda           | RSS       |
+|------------------|-----------|
+| 1.05030763404994 | 10.871579 |
+| -1               | 59.787248 |
+| 0                | 26.783034 |
+| 1                | 10.88582  |
+
+
+As a result of the work above, we could not find a transformed version of our model with any noticeable improvements. Hence, our final model did not employee any transformations.
+
+
+
+# Results
+
+## Final Model
+
+Having looked at the diagnostics, variable selection, and potential transformations above, we would like to reiterate our final model. This model produced a score of 0.81733 on Kaggle, and the model includes 23 predictors.
+
+```{r final_model, echo=FALSE, message=FALSE, warning=FALSE}
+#summary(updated_model)
+
+# updated model tables created above
+```
+
+|                          | Estimate   | Std. Error | t value     | Pr(>\|t\|) |
+|--------------------------|------------|------------|-------------|------------|
+| (Intercept)              | -0.0956912 | 0.108723   | -0.8801375  | 0.3788919  |
+| EFG_O                    | 0.025108   | 0.0019409  | 12.9364965  | 0          |
+| EFG_D                    | -0.0173218 | 0.0014257  | -12.1496496 | 0          |
+| TOR                      | -0.0184541 | 0.0021265  | -8.678167   | 0          |
+| TORD                     | 0.0188746  | 0.0013756  | 13.7213678  | 0          |
+| ORB                      | 0.0092178  | 0.0010933  | 8.4313574   | 0          |
+| DRB                      | -0.0091768 | 0.0008059  | -11.3866487 | 0          |
+| FTRD                     | -0.0018203 | 0.0003588  | -5.0734105  | 4e-07      |
+| WAB                      | 0.0181589  | 0.0010879  | 16.6924915  | 0          |
+| X500.LevelYES            | 0.5972203  | 0.1123004  | 5.3180617   | 1e-07      |
+| X500.LevelNO:ADJOE       | -0.0101787 | 0.001335   | -7.6246476  | 0          |
+| X500.LevelYES:ADJOE      | -0.0148462 | 0.0012437  | -11.9367636 | 0          |
+| WAB:X500.LevelYES        | 0.0050946  | 0.0013771  | 3.6994496   | 0.000222   |
+| ADJOE:Power.RatingMEDIUM | 0.0070205  | 0.0016043  | 4.3759501   | 1.27e-05   |
+| ADJOE:Power.RatingSMALL  | 0.0109665  | 0.0017807  | 6.1585679   | 0          |
+| Power.RatingLARGE:ADJDE  | 0.0130708  | 0.0011956  | 10.9323658  | 0          |
+| Power.RatingMEDIUM:ADJDE | 0.0114744  | 0.0013279  | 8.6407309   | 0          |
+| Power.RatingSMALL:ADJDE  | 0.009315   | 0.0011239  | 8.2883985   | 0          |
+| EFG_O:Power.RatingMEDIUM | -0.0110918 | 0.0026461  | -4.1918241  | 2.89e-05   |
+| EFG_O:Power.RatingSMALL  | -0.016703  | 0.0031358  | -5.3264853  | 1e-07      |
+| TOR:Power.RatingMEDIUM   | 0.0070655  | 0.0026112  | 2.7059044   | 0.0068704  |
+| TOR:Power.RatingSMALL    | 0.0140951  | 0.002978   | 4.7330394   | 2.4e-06    |
+| ORB:Power.RatingMEDIUM   | -0.0045416 | 0.001465   | -3.1000676  | 0.0019621  |
+| ORB:Power.RatingSMALL    | -0.0055318 | 0.001617   | -3.4210292  | 0.0006365  |
+
+
+| Observations | Residual.Std.Error | R2     | Adjusted.R2 |
+|--------------|--------------------|--------|-------------|
+| 2000         | 0.0811705          | 0.8221 | 0.82        |
+
+
+## Marginal Model Plots
+
+To further verify our model, we plotted the marginal model plots to make sure the trend of the model and data lined up. The results show that the trends in the model and data line up extremely closely, which is the goal of the model. This builds on the analysis of the variables from earlier that showed that the relationships between W.P and individual predictors are linear, so polynomial terms would not improve the predictive capabilities of the model.
+
+```{r mmps, echo=FALSE, warning=FALSE, message=FALSE}
+model_single_numerical <- lm(W.P ~ EFG_O + EFG_D + TOR + TORD + ORB + DRB + FTRD + 
+                               WAB, data = train)
+
+mmps(model_single_numerical)
+```
+
+# Limitations and Conclusions
+
+
